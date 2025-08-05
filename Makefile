@@ -36,14 +36,19 @@ train-local:
 .PHONY: inference-local
 inference-local:
 	docker run --rm \
-		-v "$(dir $(TEST_INPUT_CSV)):/opt/ml/input/data/test:ro" \
-		-v "$(MODEL_DIR):/opt/ml/model" \
-		-v "$(OUTPUT_DIR):/opt/ml/output" \
+		-v "$(abspath data):/opt/ml/input/data/test:ro" \
+		-v "$(abspath models):/opt/ml/model" \
+		-v "$(abspath output):/opt/ml/output" \
 		-v "$(SRC_DIR):/opt/ml/code" \
 		-w /opt/ml/code \
 		--platform linux/amd64 \
 		$(IMAGE) \
-		python inference.py
+		python inference.py \
+			--input /opt/ml/input/data/test/test.csv \
+			--model /opt/ml/model/loan_model.joblib \
+			--features /opt/ml/model/feature_columns.joblib \
+			--output /opt/ml/output
+
 
 # Clean all artifacts
 .PHONY: clean

@@ -21,6 +21,7 @@ response = sm.create_training_job(
         "TrainingInputMode": "File",
         "ContainerEntrypoint": ["python"],
         "ContainerArguments": ["train.py"]
+        # "ContainerArguments": ["python", "-m", "loan_model.train"]
     },
     RoleArn=role_arn,
     InputDataConfig=[

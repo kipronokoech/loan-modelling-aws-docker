@@ -18,4 +18,4 @@ ENV PYTHONDONTWRITEBYTECODE=TRUE
 
 # Set default command (override in job spec)
 # ENTRYPOINT ["python"]
-CMD ["train.py"]
+# CMD ["train.py"]
