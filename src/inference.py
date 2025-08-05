@@ -1,3 +1,5 @@
+# src/inference.py
+
 import argparse
 import pandas as pd
 import json
@@ -19,24 +21,29 @@ def run_inference(input_path, model_path, feature_path, output_dir):
     results = classification_report(df["Personal_Loan"], predictions, output_dict=True, digits=4)
     print(json.dumps(results, indent=3))
 
-    os.makedirs(os.path.dirname(output_dir), exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
+
     with open(os.path.join(output_dir, "output_test.json"), "w") as output_file:
         json.dump(results, output_file, indent=3)
 
     df["Predicted_Label"] = predictions
     df["Probability"] = probabilities
-
-    # Write prediction results
     df.to_csv(os.path.join(output_dir, "inference_results.csv"), index=False)
-    print(f"Inference complete. Results saved to: {output_dir}")
 
+    print(f"Inference complete. Results saved to: {output_dir}")
     return df
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input-path", type=str, default="/opt/ml/input/data/test/test.csv")
+    parser.add_argument("--output-dir", type=str, default="/opt/ml/output")
+    parser.add_argument("--model-path", type=str, default="/opt/ml/model/loan_model.joblib")
+    parser.add_argument("--feature-path", type=str, default="/opt/ml/model/feature_columns.joblib")
 
-    input_path = "../data/test.csv"
-    output_dir = "../output/"
-    model_file = "../models/loan_model.joblib"
-    features_file = "../models/feature_columns.joblib"
-
-    run_inference(input_path=input_path, model_path=model_file, feature_path=features_file, output_dir=output_dir)
+    args = parser.parse_args()
+    run_inference(
+        input_path=args.input_path,
+        model_path=args.model_path,
+        feature_path=args.feature_path,
+        output_dir=args.output_dir
+    )
