@@ -1,5 +1,5 @@
 import boto3
-import time
+from datetime import datetime
 
 region = "us-east-1"
 account_id = "993750298572"
@@ -8,13 +8,8 @@ role_arn = "arn:aws:iam::993750298572:role/SageMakerExecutionRole"
 ecr_image = f"{account_id}.dkr.ecr.{region}.amazonaws.com/loan-model:v102"
 
 model_name = "loan-model-inference"
-job_name = f"{model_name}-{int(time.time())}"
-
-# Input/output locations
-# input_s3 = f"s3://{bucket}/inference/input/"
-# output_s3 = f"s3://{bucket}/inference/output/"
-# model_artifact_s3_path = "s3://loan-modelling-69a3447a-2612-4dce-8144-cf053fa0db37/output/loan-model-training-1754374726/output/model.tar.gz"
-
+timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+job_name = f"{model_name}-{timestamp}"
 
 from sagemaker.processing import ScriptProcessor, ProcessingInput, ProcessingOutput
 

@@ -9,13 +9,8 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy source code
-# COPY src/ ./src/
 COPY src/ /opt/ml/code/
 
 # Set env variables for SageMaker compatibility
-ENV PYTHONUNBUFFERED=TRUE
-ENV PYTHONDONTWRITEBYTECODE=TRUE
-
-# Set default command (override in job spec)
-# ENTRYPOINT ["python"]
-# CMD ["train.py"]
+# ENV PYTHONUNBUFFERED=TRUE
+# ENV PYTHONDONTWRITEBYTECODE=TRUE

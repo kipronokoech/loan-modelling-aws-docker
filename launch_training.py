@@ -1,5 +1,5 @@
 import boto3
-import time
+from datetime import datetime
 
 region = "us-east-1"
 account_id = "993750298572"
@@ -7,10 +7,11 @@ bucket = "loan-modelling-69a3447a-2612-4dce-8144-cf053fa0db37"
 role_arn = "arn:aws:iam::993750298572:role/SageMakerExecutionRole"
 
 ecr_image = f"{account_id}.dkr.ecr.{region}.amazonaws.com/loan-model:v102"
-# 993750298572.dkr.ecr.us-east-1.amazonaws.com/loan-model:v102
 s3_input = f"s3://{bucket}/data/"
-s3_output = f"s3://{bucket}/output/"
-job_name = f"loan-model-training-{int(time.time())}"
+s3_output = f"s3://{bucket}/training_artifacts/"
+
+timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+job_name = f"loan-model-training-{timestamp}"
 
 sm = boto3.client("sagemaker", region_name=region)
 
@@ -21,7 +22,6 @@ response = sm.create_training_job(
         "TrainingInputMode": "File",
         "ContainerEntrypoint": ["python"],
         "ContainerArguments": ["train.py"]
-        # "ContainerArguments": ["python", "-m", "loan_model.train"]
     },
     RoleArn=role_arn,
     InputDataConfig=[
