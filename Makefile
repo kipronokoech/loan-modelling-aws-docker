@@ -20,7 +20,6 @@ MODEL_MOUNT := /opt/ml/model
 OUTPUT_MOUNT := /opt/ml/output
 
 # File locations inside container
-TRAIN_INPUT_FILE := $(TRAIN_MOUNT)/train.csv
 TEST_INPUT_FILE := $(TEST_MOUNT)/test.csv
 MODEL_FILE := $(MODEL_MOUNT)/loan_model.joblib
 FEATURES_FILE := $(MODEL_MOUNT)/feature_columns.joblib
@@ -38,7 +37,7 @@ all: build
 build:
 	@docker build -t $(IMAGE) . --platform $(PLATFORM)
 
-# Train the model locally
+# Train the model locally in Docker
 .PHONY: train-local
 train-local:
 	@docker run --rm \
@@ -82,6 +81,7 @@ AWS_ACCOUNT_ID := 993750298572
 AWS_REGION := us-east-1
 ECR_REPO := $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com/$(IMAGE)
 
+# Note that username must be "AWS" don't change it.
 push:
 	docker tag $(IMAGE) $(ECR_REPO)
 	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ACCOUNT_ID).dkr.ecr.$(AWS_REGION).amazonaws.com

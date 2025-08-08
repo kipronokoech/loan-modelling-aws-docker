@@ -36,7 +36,7 @@ def train(input_path: str, model_dir: str) -> None:
 
     df = pd.read_csv(input_path)
     X, y = preprocess_training(df)
-
+    print(X.shape, y.shape)
     model = DecisionTreeClassifier(max_depth=3, ccp_alpha=0.0014, random_state=42)
     model.fit(X, y)
 

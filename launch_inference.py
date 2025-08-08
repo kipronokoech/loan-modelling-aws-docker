@@ -18,16 +18,17 @@ inference_processor = ScriptProcessor(
     role=role_arn,
     instance_type="ml.t3.medium",
     instance_count=1,
+    volume_size_in_gb=4,
     command=["python3"]
 )
 
 inference_processor.run(
     inputs=[
-        ProcessingInput(source=f"s3://{bucket}/data/test.csv", destination="/opt/ml/processing/input"),
+        ProcessingInput(source=f"s3://{bucket}/data/test/test.csv", destination="/opt/ml/processing/input"),
         ProcessingInput(source=f"s3://{bucket}/models/", destination="/opt/ml/processing/model")
     ],
     outputs=[
-        ProcessingOutput(source="/opt/ml/processing/output", destination=f"s3://{bucket}/inference/output/")
+        ProcessingOutput(source="/opt/ml/processing/output", destination=f"s3://{bucket}/inference/output/predictions-{timestamp}")
     ],
     code="src/inference.py",
     arguments=[
@@ -35,6 +36,11 @@ inference_processor.run(
         "--model", "/opt/ml/processing/model/loan_model.joblib",
         "--features", "/opt/ml/processing/model/feature_columns.joblib",
         "--output", "/opt/ml/processing/output"
-    ]
+    ],
+    job_name=job_name,
+    wait=False
 
 )
+
+print(f"Processing job launched: {job_name}")
+print(f"Monitor here: https://{region}.console.aws.amazon.com/sagemaker/home?region={region}#/processing-jobs/{job_name}")
